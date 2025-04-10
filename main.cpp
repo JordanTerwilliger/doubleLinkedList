@@ -32,13 +32,13 @@ class DoublyLinkedList{
         this->numElements=numElements;
         this->head = head; //Contains nullptr,data, next element pointer
         this->tail = tail; //Contains previous pointer, data, nullptr
-        node* temp = head;
+        node* current = head;
         while (head->next != tail){
             node* n = new node(head->data);
             head = head->next;
         }
-        head = temp;
-        delete temp;
+        head = current;
+        delete current;
     };
     void push(int data){      // appends a new node on the end of the list
         cout << "Push Called" << endl;
@@ -54,8 +54,10 @@ class DoublyLinkedList{
         cout << "Non-Empty Push called" << endl;
         node* newNode = new node(data);
         newNode->prev = tail;
+        tail->next = newNode;
         newNode->next = nullptr;
         tail = newNode;
+        delete newNode;
     }; 
 
     void pop(); // removes the last element of the list
@@ -71,11 +73,11 @@ class DoublyLinkedList{
     }; 
 
     int& at(int idx){ // returns a reference to the data at the requested index, "idx"
-        node* temp = head;
+        node* current = head;
         for (size_t i = 0; i < idx; i++){
-            temp = temp->next;
+            current = current->next;
         }
-        return temp->data;
+        return current->data;
     }; 
 
 
@@ -91,6 +93,7 @@ class DoublyLinkedList{
             cout << current->data << endl;
             current = current->next;
         }
+        cout << current->data << endl;
     }
 };
 
@@ -100,6 +103,7 @@ int main(){
     dll.push(5);
     dll.push(10);
     dll.push(100);
+    dll.print();
     dll.print();
     return 0;
 }
