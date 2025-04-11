@@ -1,3 +1,6 @@
+#ifndef DOUBLYLINKEDLIST_H
+#define DOUBLYLINKEDLIST_H
+
 #include <iostream>
 using namespace std;
 
@@ -50,8 +53,8 @@ public:
         tail = newNode;
     }
 
-    void pop() {
-        if (head == nullptr){
+    void pop(){
+        if (head == nullptr) {
             cout << "Cannot remove data which does not exist";
             return;
         }
@@ -60,13 +63,13 @@ public:
             head = tail = nullptr;
             return;
         }
-        node<T>* temp = tail;
-        tail = tail->prev;
-        tail->next = nullptr;
-        delete temp;
+        node<T>* temp = head;
+        temp = temp->next;
+        delete head;
+        head = temp;
     }
 
-    int size(){
+    int size() {
         int count = 0;
         node<T>* current = head;
         while (current != nullptr) {
@@ -77,6 +80,14 @@ public:
     }
 
     T* at(int idx) {
+        if (idx < 0) {
+            cout << "Index cannot be negative number" << endl;
+            return nullptr;
+        }
+        if (idx >= size()) {
+            cout << "Index cannot be beyond list" << endl;
+            return nullptr;
+        }
         node<T>* current = head;
         for (int i = 0; i < idx; i++) {
             if (current == nullptr) return nullptr;
@@ -118,60 +129,60 @@ public:
 
     void print() {
         node<T>* current = head;
-        if (!current) {
+        if (size() == 0) {
             cout << "No data to print" << endl;
             return;
         }
-        while (current) {
+        while (current != nullptr) {
             cout << current->data << endl;
             current = current->next;
         }
     }
 
-    void insert(T data, int idx){
-        if(idx < 0){
+    void insert(T data, int idx) {
+        if (idx < 0) {
             cout << "Index cannot be negative number" << endl;
             return;
         }
-        if(idx > size()){
-            cout << "Index cannot be end of list or beyond list. Use push instead." << endl;
+        if (idx > size()) {
+            cout << "Index cannot be end of list or beyond list. Use push instead if you intended to insert at tail." << endl;
             return;
         }
         node<T>* current = head;
-         for (size_t i = 0; i < idx-1; i++){
+        for (size_t i = 0; i < idx - 1; i++) {
             current = current->next;
-         }
-         node<T>* temp = current->next;
-         node<T>* newNode = new node<T>(data);
-         current->next = newNode;
-         newNode->next = temp;
+        }
+        node<T>* temp = current->next;
+        node<T>* newNode = new node<T>(data);
+        current->next = newNode;
+        newNode->next = temp;
     }
-    void remove(int idx){
-        if(idx<0){
+
+    void remove(int idx) {
+        if(size() == 0){
+            cout << "Cannot remove data which does not exist";
+            return;
+        }
+        if (idx < 0) {
             cout << "Index cannot be negative number" << endl;
             return;
         }
-        if(idx >= size()){
+        if (idx >= size()) {
             cout << "Index cannot be beyond list. Use pop instead if you intended to delete the tail." << endl;
             return;
         }
-        if(idx == 0){ //1 hour of my life gone because I for got to put '==' instead of '='
-            node<T>* temp = head;
-            temp = temp->next;
-            delete head;
-            head = temp;
+        if (idx == 0) {
+            pop();
             return;
         }
         node<T>* current = head;
-        for (size_t i = 1; i < idx; i++){
+        for (size_t i = 1; i < idx; i++) {
             current = current->next;
         }
         current->next = current->next->next;
         current = current->next;
         delete current;
     }
-
 };
-int main(){
-    return 0;
-}
+
+#endif // DOUBLYLINKEDLIST_H
