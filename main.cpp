@@ -20,38 +20,32 @@ class DoublyLinkedList{
     private:
     node* head;
     node* tail;
-    int numElements;
 
     public:
     DoublyLinkedList(){ //Default Constructor
         head = nullptr;
         tail = nullptr;
-        numElements = 0;
     };
-    DoublyLinkedList(const DoublyLinkedList& list){ //Copy Constructor
-        this->numElements=numElements;
+    DoublyLinkedList(DoublyLinkedList& list){ //Copy Constructor
+        cout << "Copy Constructor Called" << endl;
         this->head = head; //Contains nullptr,data, next element pointer
         this->tail = tail; //Contains previous pointer, data, nullptr
         node* current = head;
-        while (head->next != tail){
-            node* n = new node(head->data);
-            head = head->next;
+        while (current->next != list.tail){
+            node* n = new node(current->data);
+            current = current->next;
         }
-        head = current;
+        this->head = current;
         delete current;
     };
     void push(int data){      // appends a new node on the end of the list
-        cout << "Push Called" << endl;
-        numElements++;
 
         //List is empty
         if(head==nullptr){
-            cout << "Empty List Push" << endl;
             head = new node(data);
             tail = head;
             return;
         }
-        cout << "Non-Empty Push called" << endl;
         node* newNode = new node(data);
         newNode->prev = tail;
         tail->next = newNode;
@@ -60,15 +54,27 @@ class DoublyLinkedList{
         delete newNode;
     }; 
 
-    void pop(); // removes the last element of the list
+    void pop(){  // removes the last element of the list
+        if(head != tail){
+            node* temp = tail;
+            tail = tail->prev;
+            tail->next=nullptr;
+            delete temp;
+        }
+        else{
+            delete tail;
+            head = tail = nullptr;
+        }
+    };
 
     int size(){  // returns the number of elements in the list
         int count = 0;
         node* current = head;
-        while(current != nullptr){
+        while(current->next != nullptr){
             count++;
             current = current->next;
         }
+        count++;
         return count;
     }; 
 
@@ -82,18 +88,26 @@ class DoublyLinkedList{
 
 
     ~DoublyLinkedList(){   //Destructor
-
+        delete this->head;
+        delete this->tail;
     };
      
-    void operator=(const DoublyLinkedList& list);
-    void print(){
+    void operator=(DoublyLinkedList& OGlist){ //Operator Overload
+        cout << "Operator overload called" << endl;
+        for (int i = 0; i < OGlist.size(); i++){
+            this->push(OGlist.at(i));
+        }
+    };
+    void print(){ //Print every entry in DLL
+        if(head != tail){
         node* current = head;
-        while(current->next != nullptr){
-            cout << "Print function called" << endl;
+        while(current != tail){
             cout << current->data << endl;
             current = current->next;
         }
         cout << current->data << endl;
+    }
+    else{cout << "No data found" << endl;}
     }
 };
 
@@ -101,9 +115,16 @@ class DoublyLinkedList{
 int main(){
     DoublyLinkedList dll;
     dll.push(5);
-    dll.push(10);
-    dll.push(100);
+    dll.push(1230);
+    dll.push(14);
     dll.print();
-    dll.print();
+    cout << dll.at(1) << endl;
+    cout << dll.size() << endl;
+    DoublyLinkedList secondDLL;
+    secondDLL = dll;
+    secondDLL.print();
+    secondDLL.pop();
+    secondDLL.print();
+    cout << "Code finished without crashing" << endl;
     return 0;
 }
